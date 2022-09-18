@@ -2,12 +2,15 @@ package droids;
 
 public class Droid {
     protected String Name;
-    protected int Health = 100;
+    protected int currHealth = 100;
     protected int Damage = 30;
+
+    protected int defaultHealth = 100;
 
     public Droid(String name, int health, int damage) {
         Name = name;
-        Health = health;
+        currHealth = health;
+        defaultHealth = health;
         Damage = damage;
     }
 
@@ -19,19 +22,28 @@ public class Droid {
         Name = name;
     }
 
-    public int getHealth() {
-        return Health;
-    }
 
-    public void setHealth(int health) {
-        Health = health;
-    }
 
     public int getDamage() {
         return Damage;
     }
 
-    public void setDamage(int damage) {
-        Damage = damage;
+    public int getCurrHealth() {
+        return currHealth;
     }
+
+    public void setCurrHealth(int currHealth) {
+        this.currHealth = currHealth;
+    }
+
+    @Override
+    public String toString() {
+        return Name;
+    }
+
+    public void ResetHealth(){
+        currHealth = defaultHealth;
+    }
+
+    //TODO: Список предметів
 }
