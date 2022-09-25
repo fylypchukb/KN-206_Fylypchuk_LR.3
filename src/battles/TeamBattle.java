@@ -6,11 +6,13 @@ import droids.Droid;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TeamBattle {
-    private ArrayList<Droid> teamA;
-    private ArrayList<Droid> teamB;
+    private final ArrayList<Droid> teamA;
+    private final ArrayList<Droid> teamB;
     private FileWriter BattleLog;
     private File file;
 
@@ -32,44 +34,36 @@ public class TeamBattle {
         int toA = teamA.size();
         int toB = teamB.size();
         for (int i = 0; i < toA || i < toB; i++) {
-            if (i != toA - 1) {
+            if (i < toA) {
                 int swapIndexA = r.nextInt(toA - from) + from;
                 Collections.swap(teamA, i, swapIndexA);
             }
-            if (i != toB - 1) {
+            if (i < toB) {
                 int swapIndexB = r.nextInt(toB - from) + from;
                 Collections.swap(teamB, i, swapIndexB);
             }
         }
+
+        Battle.ShowTeams(teamA, teamB);
     }
 
     private void BattleOrder() throws IOException {
         int a = 0, b = 0;
-        boolean isADefeated = false, isBDefeated = false;
         while (true) {
-            if (teamA.size() == 0) {
-                isADefeated = true;
-                System.out.println(Colors.ANSI_GREEN + "Player 2 has won" + Colors.ANSI_RESET);
-                BattleLog.write("Player 2 has won");
-                break;
-            }
+            System.out.print(Colors.ANSI_YELLOW + "\nPlayer 1 " + Colors.ANSI_RESET);
+            AttackProc(a, teamA, teamB);
             if (teamB.size() == 0) {
-                isBDefeated = true;
                 System.out.println(Colors.ANSI_GREEN + "Player 1 has won" + Colors.ANSI_RESET);
                 BattleLog.write("Player 1 has won");
                 break;
             }
 
-            System.out.println(Colors.ANSI_YELLOW + "Player 1: " + Colors.ANSI_RESET);
-            Battle.Attack(teamA.get(a), SelectAttack(teamB), BattleLog);
-            if (teamB.get(b).getCurrHealth() <= 0) {
-                teamB.remove(b);
-            }
-
-            System.out.println(Colors.ANSI_CYAN + "Player 2: " + Colors.ANSI_RESET);
-            Battle.Attack(teamB.get(b), SelectAttack(teamA), BattleLog);
-            if (teamA.get(a).getCurrHealth() <= 0) {
-                teamA.remove(a);
+            System.out.println(Colors.ANSI_CYAN + "\nPlayer 2 " + Colors.ANSI_RESET);
+            AttackProc(b, teamB, teamA);
+            if (teamA.size() == 0) {
+                System.out.println(Colors.ANSI_GREEN + "Player 2 has won" + Colors.ANSI_RESET);
+                BattleLog.write("Player 2 has won");
+                break;
             }
 
             a++;
@@ -82,7 +76,19 @@ public class TeamBattle {
         }
     }
 
-    private Droid SelectAttack(List<Droid> toAttack) {
+    private void AttackProc(int index, ArrayList<Droid> attacker, ArrayList<Droid> defender) throws IOException {
+        if (index >= attacker.size())
+            index = 0;
+
+        System.out.print(Colors.ANSI_CYAN + "with " + attacker.get(index) + ": " + Colors.ANSI_RESET);
+        int attackIndex = SelectAttack(defender);
+        Battle.Attack(attacker.get(index), defender.get(attackIndex), BattleLog);
+        if (defender.get(attackIndex).getCurrHealth() <= 0) {
+            defender.remove(attackIndex);
+        }
+    }
+
+    private int SelectAttack(List<Droid> toAttack) {
         System.out.println("Select who to attack");
         return Battle.GetDroid(toAttack);
     }
@@ -98,20 +104,23 @@ public class TeamBattle {
     }
 
     private void CreateLog() throws IOException {
-        String name = "E:\\Projects\\Test\\TeamBattle_" + java.time.LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm");
+        LocalDateTime now = LocalDateTime.now();
+
+        String name = "E:\\Projects\\Test\\TeamBattle_" + dtf.format(now) + ".txt";
         file = new File(name);
         file.createNewFile();
         BattleLog = new FileWriter(file);
         BattleLog.write("Player 1: ");
         for (Droid item : teamA) {
-            BattleLog.write(item.toString());
+            BattleLog.write(item.toString() + "\n");
         }
         BattleLog.write("Player 2: ");
         for (Droid item : teamB) {
-            BattleLog.write(item.toString());
+            BattleLog.write(item.toString() + "\n");
         }
 
-        BattleLog.write("\nTeamBattle: ");
+        BattleLog.write("\nTeamBattle: \n");
     }
 
     private void FileSave() throws IOException {

@@ -2,10 +2,10 @@ package droids;
 
 public class Droid {
     protected String Name;
-    protected int currHealth = 100;
-    protected int Damage = 30;
+    protected int currHealth;
+    protected int Damage;
 
-    protected int defaultHealth = 100;
+    protected int defaultHealth;
 
     public Droid(String name, int health, int damage) {
         Name = name;
@@ -21,7 +21,6 @@ public class Droid {
     public void setName(String name) {
         Name = name;
     }
-
 
 
     public int getDamage() {
@@ -41,7 +40,7 @@ public class Droid {
         return Name;
     }
 
-    public void ResetHealth(){
+    public void ResetHealth() {
         currHealth = defaultHealth;
     }
 

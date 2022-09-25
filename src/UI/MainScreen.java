@@ -8,12 +8,10 @@ import droids.Droid;
 import droids.Knight;
 import droids.Sorcerer;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class MainScreen {
@@ -23,19 +21,20 @@ public class MainScreen {
 
 
     public void Startup() throws IOException {
+        System.out.println(Colors.ANSI_GREEN + "Welcome to Droid Attack" + Colors.ANSI_RESET);
         while (true) {
-            System.out.println("Створити команду - 1");
+            System.out.println("\nСтворити команду - 1");
             System.out.println("Показати команди - 2");
             System.out.println("Розрочати дуель - 3");
             System.out.println("Розпочати битву команда на команду - 4");
             System.out.println("Відтворити файл - 5");
-            System.out.println("Завершити гру - 6");
+            System.out.println("Завершити гру - 6\n");
 
             Scanner scan = new Scanner(System.in);
             int input = scan.nextInt();
             switch (input) {
                 case 1:
-                    FormTeam();
+                    CreateTeam();
                     break;
                 case 2:
                     ShowTeams();
@@ -55,61 +54,62 @@ public class MainScreen {
         }
     }
 
-    private void CreateTeam(){
+    private void CreateTeam() {
         System.out.print("\nНомер команди: ");
         Scanner scan = new Scanner(System.in);
         int input = scan.nextInt();
-        if(input == 1)
+        if (input == 1)
             userA = FormTeam();
-        if(input == 2)
+        if (input == 2)
             userB = FormTeam();
     }
 
 
-    private ArrayList<Droid> FormTeam(){
+    private ArrayList<Droid> FormTeam() {
         Scanner scan = new Scanner(System.in);
-        ArrayList <Droid> team= new ArrayList<Droid>();
+        ArrayList<Droid> team = new ArrayList<>();
         int i = 0;
-        while (true){
-            System.out.println("Виберіть " + i + "-ого дройда: ");
+        while (true) {
+            System.out.println("Виберіть " + (i + 1) + "-ого дройда: ");
             System.out.println("1: Archer - 100 HP - 30 DMG");
             System.out.println("2: Knight - 120 HP - 20 DMG");
             System.out.println("3: Sorcerer - 80 HP - 40 DMG");
             System.out.println("0: Закінчити формувати команду");
 
-            int input  = scan.nextInt();
+            int input = scan.nextInt();
             switch (input) {
                 case 1:
-                    team.add(new Archer(i));
+                    team.add(new Archer(i + 1));
+                    i++;
                     break;
                 case 2:
-                    team.add(new Knight(i));
+                    team.add(new Knight(i + 1));
+                    i++;
                     break;
                 case 3:
-                    team.add(new Sorcerer(i));
+                    team.add(new Sorcerer(i + 1));
+                    i++;
                     break;
-                case 4:
+                case 0:
                     return team;
             }
         }
     }
-    private void ShowTeams(){
-        System.out.println("First team: ");
-        for (int i = 0; i < userA.size(); i++) {
-            System.out.println(i + ": " + userA.get(i) + " - " + userA.get(i).getCurrHealth());
+
+    private void ShowTeams() {
+        if (userA == null || userB == null) {
+            System.out.println("Not all teams are formed");
+            return;
         }
 
-        System.out.println("\nSecond team: ");
-        for (int i = 0; i < userB.size(); i++) {
-            System.out.println(i + ": " + userB.get(i) + " - " + userB.get(i).getCurrHealth());
-        }
+        Battle.ShowTeams(userA, userB);
     }
 
     private void PreStartDuel() throws IOException {
         System.out.println("User1: Select whom to attack with");
-        Droid first = Battle.GetDroid(userA);
+        Droid first = userA.get(Battle.GetDroid(userA));
         System.out.println("User2: Select whom to attack with");
-        Droid second = Battle.GetDroid(userB);
+        Droid second = userB.get(Battle.GetDroid(userB));
 
         Duel duel = new Duel(first, second);
         duel.StartDuel();
@@ -120,19 +120,19 @@ public class MainScreen {
         teamBattle.StartBattle();
     }
 
-    private void ReadFile(){
+    private void ReadFile() {
         System.out.println("Name of file to read: ");
         Scanner scanConsole = new Scanner(System.in);
         String fileName = scanConsole.nextLine();
-        File file  = new File(fileName);
+        File file = new File(fileName);
         try {
             System.out.println();
             Scanner scanFile = new Scanner(file);
-            while (scanFile.hasNextLine()){
+            while (scanFile.hasNextLine()) {
                 System.out.println(scanFile.nextLine());
             }
-            System.out.println(Colors.ANSI_RED +"\nEnd of file" + Colors.ANSI_RESET);
-        } catch (FileNotFoundException e){
+            System.out.println(Colors.ANSI_RED + "\nEnd of file" + Colors.ANSI_RESET);
+        } catch (FileNotFoundException e) {
             System.out.println("Error in reading file");
         }
     }

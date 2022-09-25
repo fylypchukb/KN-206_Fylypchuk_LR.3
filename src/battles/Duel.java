@@ -6,11 +6,13 @@ import droids.Droid;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Duel {
-    private Droid a;
-    private Droid b;
+    private final Droid a;
+    private final Droid b;
 
     private File file;
     private FileWriter DuelLog;
@@ -31,14 +33,14 @@ public class Duel {
         while (true) {
             Battle.Attack(a, b, DuelLog);
             if (b.getCurrHealth() <= 0) {
-                System.out.println(a + "is a winner!!!");
-                DuelLog.write(a + "is a winner");
+                System.out.println(a + " is a winner!!!");
+                DuelLog.write(a + " is a winner\n");
                 break;
             }
             Battle.Attack(b, a, DuelLog);
             if (a.getCurrHealth() <= 0) {
-                System.out.println(b + "is a winner!!!");
-                DuelLog.write(b + "is a winner");
+                System.out.println(b + " is a winner!!!");
+                DuelLog.write(b + " is a winner\n");
                 break;
             }
         }
@@ -53,15 +55,18 @@ public class Duel {
     }
 
     private void CreateLog() throws IOException {
-        String name = "E:\\Projects\\Test\\Duel_" + java.time.LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm");
+        LocalDateTime now = LocalDateTime.now();
+
+        String name = "E:\\Projects\\Test\\Duel_" + dtf.format(now) + ".txt";
         file = new File(name);
         file.createNewFile();
         DuelLog = new FileWriter(file);
-        DuelLog.write("Player 1: " + a);
+        DuelLog.write("Player 1: " + a + "\n");
 
-        DuelLog.write("Player 2: " + b);
+        DuelLog.write("Player 2: " + b + "\n");
 
-        DuelLog.write("\nDuel: ");
+        DuelLog.write("\nDuel: \n");
     }
 
     private void FileSave() throws IOException {

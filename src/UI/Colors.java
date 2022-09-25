@@ -1,7 +1,5 @@
 package UI;
 
-import java.awt.*;
-
 public enum Colors {
     ANSI_YELLOW("\u001B[33m"),
     ANSI_CYAN("\u001B[36m"),
@@ -10,9 +8,9 @@ public enum Colors {
     ANSI_GREEN("\u001B[32m"),
     ANSI_BLUE("\u001B[34m"),
     ANSI_PURPLE("\u001B[35m"),
-    ANSI_RESET("\u001B[37m");
+    ANSI_RESET("\u001B[0m");
 
-    private String color;
+    private final String color;
 
     Colors(String color) {
         this.color = color;
